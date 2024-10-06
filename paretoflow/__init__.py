@@ -9,5 +9,5 @@ __credits__ = (
     "Mila - Quebec AI Institute, McGill University Cyber Physical System Lab (CPSL)"
 )
 
-from paretoflow.flow import FlowMatching, VectorFieldNet
-from paretoflow.flow_utils import train_flow_matching
+from paretoflow.flow import train_flow_matching
+from paretoflow.flow_net import FlowMatching, VectorFieldNet
