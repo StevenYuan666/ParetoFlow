@@ -16,7 +16,7 @@ def train_flow_matching(
     all_x: np.ndarray,
     device: torch.device,
     name: str,
-    store_path: str = "saved_models/",
+    store_path: str = "saved_fm_models/",
     validation_size: int = None,
     batch_size: int = 64,
     lr: float = 1e-3,
