@@ -8,3 +8,6 @@ __author__ = "Ye Yuan, Can Chen"
 __credits__ = (
     "Mila - Quebec AI Institute, McGill University Cyber Physical System Lab (CPSL)"
 )
+
+from flow import FlowMatching, VectorFieldNet
+from flow_utils import train_flow_matching

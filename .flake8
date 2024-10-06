@@ -1,3 +1,4 @@
 [flake8]
 exclude = build, paretoflow.egg-info, .git, .mypy_cache, .pytest_cache, .tox, .venv, .vscode, __pycache__
 max-line-length = 100
+per-file-ignores = __init__.py:F401
