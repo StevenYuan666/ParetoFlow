@@ -37,7 +37,7 @@ class VectorFieldNet(nn.Module):
             nn.Linear(M, D),
         )
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Forward pass of the neural network
         :param x: torch.Tensor: the input tensor
@@ -48,7 +48,29 @@ class VectorFieldNet(nn.Module):
 
 
 class FlowMatching(nn.Module):
-    def __init__(self, vnet, sigma, D, T, stochastic_euler=False, prob_path="icfm"):
+    """
+    The Flow Matching algorithm, referring to the implementation of
+    https://github.com/jmtomczak/intro_dgm/blob/main/sbgms/fm_example.ipynb
+    """
+
+    def __init__(
+        self,
+        vnet: nn.Module,
+        sigma: float,
+        D: int,
+        T: int,
+        stochastic_euler: bool = False,
+        prob_path: str = "icfm",
+    ):
+        """
+        Initialize the Flow Matching algorithm
+        :param vnet: nn.Module: the vector field neural network
+        :param sigma: float: the sigma parameter
+        :param D: int: the input dimension
+        :param T: int: the number of steps
+        :param stochastic_euler: bool: whether to use the stochastic Euler method
+        :param prob_path: str: the probability path
+        """
         super(FlowMatching, self).__init__()
 
         self.vnet = vnet
@@ -75,7 +97,16 @@ class FlowMatching(nn.Module):
 
         self.PI = torch.from_numpy(np.asarray(np.pi))
 
-    def log_p_base(self, x, reduction="sum", dim=1):
+    def log_p_base(
+        self, x: torch.Tensor, reduction: str = "sum", dim: int = 1
+    ) -> torch.Tensor:
+        """
+        Calculate the log probability of the base distribution
+        :param x: torch.Tensor: the input tensor
+        :param reduction: str: the reduction method
+        :param dim: int: the dimension
+        :return: torch.Tensor: the log probability tensor
+        """
         log_p = -0.5 * torch.log(2.0 * self.PI) - 0.5 * x**2.0
         if reduction == "mean":
             return torch.mean(log_p, dim)
@@ -84,7 +115,12 @@ class FlowMatching(nn.Module):
         else:
             return log_p
 
-    def sample_base(self, x_1):
+    def sample_base(self, x_1: torch.Tensor) -> torch.Tensor:
+        """
+        Sample from the base distribution
+        :param x_1: torch.Tensor: the input tensor
+        :return: torch.Tensor: the output tensor
+        """
         # Gaussian base distribution
         if self.prob_path == "icfm":
             return torch.randn_like(x_1)
@@ -93,7 +129,16 @@ class FlowMatching(nn.Module):
         else:
             return None
 
-    def sample_p_t(self, x_0, x_1, t):
+    def sample_p_t(
+        self, x_0: torch.Tensor, x_1: torch.Tensor, t: torch.Tensor
+    ) -> torch.Tensor:
+        """
+        Sample from the conditional distribution
+        :param x_0: torch.Tensor: the input tensor at time 0
+        :param x_1: torch.Tensor: the input tensor at time 1
+        :param t: torch.Tensor: the input tensor for time
+        :return: torch.Tensor: the output tensor
+        """
         if self.prob_path == "icfm":
             mu_t = (1.0 - t) * x_0 + t * x_1
             sigma_t = self.sigma
@@ -105,7 +150,17 @@ class FlowMatching(nn.Module):
 
         return x
 
-    def conditional_vector_field(self, x, x_0, x_1, t):
+    def conditional_vector_field(
+        self, x: torch.Tensor, x_0: torch.Tensor, x_1: torch.Tensor, t: torch.Tensor
+    ) -> torch.Tensor:
+        """
+        Calculate the conditional vector field
+        :param x: torch.Tensor: the input tensor
+        :param x_0: torch.Tensor: the input tensor at time 0
+        :param x_1: torch.Tensor: the input tensor at time 1
+        :param t: torch.Tensor: the input tensor for time
+        :return: torch.Tensor: the output tensor
+        """
         if self.prob_path == "icfm":
             u_t = x_1 - x_0
         elif self.prob_path == "fm":
@@ -113,7 +168,13 @@ class FlowMatching(nn.Module):
 
         return u_t
 
-    def forward(self, x_1, reduction="mean"):
+    def forward(self, x_1: torch.Tensor, reduction: str = "mean") -> torch.Tensor:
+        """
+        Forward pass of the Flow Matching algorithm
+        :param x_1: torch.Tensor: the input tensor at time 1
+        :param reduction: str: the reduction method
+        :return: torch.Tensor: the loss tensor
+        """
         # =====Flow Matching
         # =====
         # z ~ q(z), e.g., q(z) = q(x_0) q(x_1), q(x_0) = base, q(x_1) = empirical
@@ -148,7 +209,12 @@ class FlowMatching(nn.Module):
         return loss
 
     # This is an unconditional sampling process
-    def sample(self, batch_size=64):
+    def sample(self, batch_size: int = 64) -> torch.Tensor:
+        """
+        Sample from the Flow Matching algorithm
+        :param batch_size: int: the batch size
+        :return: torch.Tensor: the output tensor
+        """
         # Euler method
         # sample x_0 first
         x_t = self.sample_base(torch.empty(batch_size, self.D))
@@ -167,7 +233,13 @@ class FlowMatching(nn.Module):
         x_final = x_t
         return x_final
 
-    def log_prob(self, x_1, reduction="mean"):
+    def log_prob(self, x_1: torch.Tensor, reduction: str = "mean") -> torch.Tensor:
+        """
+        Calculate the log probability of the Flow Matching algorithm
+        :param x_1: torch.Tensor: the input tensor at time 1
+        :param reduction: str: the reduction method
+        :return: torch.Tensor: the log probability tensor
+        """
         # backward Euler (see Appendix C in Lipman's paper)
         ts = torch.linspace(1.0, 0.0, self.T)
         delta_t = ts[1] - ts[0]

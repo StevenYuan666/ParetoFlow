@@ -1,3 +1,7 @@
+"""
+This module contains utility functions for the ParetoFlow package.
+"""
+
 from typing import List
 
 import numpy as np

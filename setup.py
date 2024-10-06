@@ -1,3 +1,8 @@
+"""
+Paretoflow is a Python package for offline multi-objective optimization using
+Generative Flow Models with Multi Predictors Guidance to approximate the Pareto front.
+"""
+
 from setuptools import setup
 
 from paretoflow import __author__, __credits__, __version__
