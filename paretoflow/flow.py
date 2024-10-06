@@ -1,3 +1,7 @@
+"""
+This module contains the functions to train the flow matching model.
+"""
+
 import os
 
 import numpy as np
