@@ -24,7 +24,7 @@ jobs:
           python setup.py install
       - name: isort
         run: |
-          python -m  isort . --check --diff
+          python -m  isort . --profile black --check --diff
       - name: black
         run: |
           python -m black --check --diff .
