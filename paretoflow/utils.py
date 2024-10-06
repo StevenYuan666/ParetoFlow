@@ -1,7 +1,4 @@
-import os
-import sys
-from types import SimpleNamespace
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 import torch
@@ -34,10 +31,10 @@ def calc_crowding_distance(F) -> np.ndarray:
     n_points, n_obj = F.shape
 
     # sort each column and get index
-    I = torch.argsort(F, dim=0, descending=False)
+    index = torch.argsort(F, dim=0, descending=False)
 
     # sort the objective space values for the whole matrix
-    F_sorted = torch.gather(F, 0, I)
+    F_sorted = torch.gather(F, 0, index)
 
     # calculate the distance from each point to the last and next
     inf_tensor = torch.full((1, n_obj), float("inf"), device=F.device, dtype=F.dtype)
@@ -61,7 +58,7 @@ def calc_crowding_distance(F) -> np.ndarray:
     dist_to_next[torch.isnan(dist_to_next)] = 0.0
 
     # sum up the distance to next and last and norm by objectives - also reorder from sorted list
-    J = torch.argsort(I, dim=0, descending=False)
+    J = torch.argsort(index, dim=0, descending=False)
     crowding_dist = (
         torch.sum(
             torch.gather(dist_to_last, 0, J) + torch.gather(dist_to_next, 0, J), dim=1
@@ -95,8 +92,8 @@ def get_N_nondominated_indices(Y, num_ret, fronts=None) -> List[int]:
 
             d = np.zeros(len(front))
             d[is_unique] = _d
-            I = np.argsort(d)[-n_keep:]
-            indices_select += [int(i) for i in I]
+            index = np.argsort(d)[-n_keep:]
+            indices_select += [int(i) for i in index]
             break
 
     return indices_select

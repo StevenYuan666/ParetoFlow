@@ -5,7 +5,8 @@ from paretoflow import __author__, __credits__, __version__
 setup(
     name="paretoflow",
     version=__version__,
-    description="Paretoflow is a Python package for offline multi-objective optimization using Generative Flow Models with Multi Predictors Guidance to approximate the Pareto front.",
+    description="Paretoflow is a Python package for offline multi-objective optimization using \
+    Generative Flow Models with Multi Predictors Guidance to approximate the Pareto front.",
     url="https://github.com/StevenYuan666/ParetoFlow",
     author=__author__,
     author_email="ye.yuan3@mail.mcgill.ca",
