@@ -6,9 +6,10 @@ import os
 
 import numpy as np
 import torch
-from flow import FlowMatching, VectorFieldNet
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
+
+from paretoflow.flow import FlowMatching, VectorFieldNet
 
 
 def evaluation_fm(
