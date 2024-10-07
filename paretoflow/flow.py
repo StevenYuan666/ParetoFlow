@@ -88,6 +88,7 @@ def train_flow_matching(
         optimizer=optimizer,
         training_loader=training_loader,
         val_loader=val_loader,
+        device=device,
     )
 
     return nll_val, model_store_dir + name + ".model", model

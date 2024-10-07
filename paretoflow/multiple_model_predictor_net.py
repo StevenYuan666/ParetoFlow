@@ -266,6 +266,20 @@ class MultipleModels(nn.Module):
         x = torch.cat(x, dim=1)
         return x
 
+    def save(self):
+        """
+        Save the model.
+        """
+        for model in self.obj2model.values():
+            model.save()
+
+    def load(self):
+        """
+        Load the model.
+        """
+        for model in self.obj2model.values():
+            model.load()
+
 
 class SingleModel(nn.Module):
     """

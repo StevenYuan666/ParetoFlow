@@ -35,14 +35,16 @@ class ParetoFlowSampler:
         :param fm_model: FlowMatching: the FlowMatching model
         :param proxies: MultipleModels: the MultipleModels model
         """
-        self.fm_model = fm_model
-        self.proxies = proxies
+        self.fm_model = fm_model.to(device)
+        self.proxies = proxies.to(device)
         self.device = device
         self.D = fm_model.D
         self.sigma = fm_model.sigma
         self.vnet = fm_model.vnet
         self.time_embedding = fm_model.time_embedding
-        self.classifiers = [proxy for proxy in proxies.obj2model.values()]
+        self.classifiers = [
+            proxy.to(self.device) for proxy in proxies.obj2model.values()
+        ]
 
     def weighted_conditional_vnet(
         self,
@@ -163,7 +165,7 @@ class ParetoFlowSampler:
         # We hope the len(objectives_weights) is equal to batch_size or larger than batch_size
         n_partitions = 1
         while True:
-            if math.comb(M + n_partitions - 1, n_partitions) >= 300:
+            if math.comb(M + n_partitions - 1, n_partitions) >= 400:
                 break
             n_partitions += 1
         objectives_weights = get_reference_directions(
@@ -482,8 +484,8 @@ class ParetoFlowSampler:
         all_x: np.ndarray,
         all_y: np.ndarray,
         T: int = 1000,
-        O: int = 10,
-        K: int = 20,
+        O: int = 5,
+        K: int = 0,
         num_solutions: int = 256,
         distance: str = "cosine",
         g_t: float = 0.1,
@@ -513,9 +515,11 @@ class ParetoFlowSampler:
         xu: the upper bound of the solutions
         return: the pareto set of the generated samples
         """
+        if K == 0:
+            K = len(self.classifiers) + 1
         # Obtain objectives weights and the number of samples we want to generate
         # shape: (batch_size, len(classifiers))
-        objectives_weights, batch_size = FlowMatching.calculate_objectives_weights(
+        objectives_weights, batch_size = ParetoFlowSampler.calculate_objectives_weights(
             len(self.classifiers), num_solutions
         )
 
@@ -531,21 +535,21 @@ class ParetoFlowSampler:
 
         # Calculate the neighborhood of the diverse samples
         # shape: (batch_size, K)
-        neighborhood_indices = FlowMatching.all_neighborhood_indices(
+        neighborhood_indices = ParetoFlowSampler.all_neighborhood_indices(
             batch_size, objectives_weights, K, distance=distance
         )
 
         # Calculate the M closest indices for filtering the samples in non-convex cases
         # shape: (batch_size, M)
         M = len(self.classifiers) + 1
-        all_m_closest_indices = FlowMatching.all_neighborhood_indices(
+        all_m_closest_indices = ParetoFlowSampler.all_neighborhood_indices(
             batch_size, objectives_weights, M, distance=distance
         )
 
         # shape: (batch_size, M, len(classifiers))
         m_closest_objectives_weights = objectives_weights[all_m_closest_indices]
         # shapeL (batch_size * M, 1)
-        m_closest_angles = FlowMatching.calculate_angles(
+        m_closest_angles = ParetoFlowSampler.calculate_angles(
             m_closest_objectives_weights.view(batch_size * M, len(self.classifiers)),
             objectives_weights.repeat_interleave(
                 M, dim=0
@@ -560,7 +564,7 @@ class ParetoFlowSampler:
 
         # Algorithm 1 in the paper
         # go step-by-step to x_1 (data)
-        ts, delta_t = FlowMatching.get_ts_and_delta_t(
+        ts, delta_t = ParetoFlowSampler.get_ts_and_delta_t(
             T, t_threshold=t_threshold, adaptive=adaptive
         )
 
@@ -666,7 +670,7 @@ class ParetoFlowSampler:
 
                 # Calculate the angles between the predicted scores and the i-th objective weights
                 # shape: (batch_size, K * O, 1)
-                angles = FlowMatching.calculate_angles(
+                angles = ParetoFlowSampler.calculate_angles(
                     neighborhood_scores.view(batch_size * K * O, len(self.classifiers)),
                     objectives_weights.repeat_interleave(K * O, dim=0),
                 )
@@ -674,7 +678,7 @@ class ParetoFlowSampler:
 
                 # Filter out the samples whose angles are larger than phi_i, find the indices
                 # shape: (batch_size, K * O, 1)
-                angle_filter_mask = FlowMatching.get_angle_filter_mask(
+                angle_filter_mask = ParetoFlowSampler.get_angle_filter_mask(
                     angles, phi, batch_size
                 )
 
@@ -721,16 +725,16 @@ class ParetoFlowSampler:
 
         temp_pareto_set = [pareto_set[i][0] for i in range(batch_size)]
         # Remove duplicates in the pareto set, because they are not contributing to the hypervolume
-        temp_pareto_set = FlowMatching.remove_duplicates(temp_pareto_set)
+        temp_pareto_set = ParetoFlowSampler.remove_duplicates(temp_pareto_set)
         assert (
             len(temp_pareto_set) >= num_solutions
         ), "Error: The number of solutions in the pareto set is \
         less than the number of solutions we want to keep"
-        res_x = temp_pareto_set
+        res_x = torch.stack(temp_pareto_set, dim=0).squeeze()
         res_y = []
         with torch.no_grad():
             for classifier in self.classifiers:
-                res_y.append(-1 * classifier(torch.tensor(res_x).to(device)))
+                res_y.append(-1 * classifier(res_x.to(device)))
         res_y = torch.stack(res_y, dim=1).squeeze()
         res_x = res_x.cpu().detach().numpy()
         res_y = res_y.cpu().detach().numpy()
@@ -741,5 +745,4 @@ class ParetoFlowSampler:
         visible_masks[np.where(np.logical_or(np.isinf(res_x), np.isnan(res_x)))[0]] = 0
         res_x = res_x[np.where(visible_masks == 1)[0]]
         res_y = res_y[np.where(visible_masks == 1)[0]]
-        pareto_set = temp_pareto_set
-        return pareto_set
+        return res_x, res_y

@@ -102,7 +102,7 @@ def training_fm(
         print(f"Epoch: {e}, train nll={epoch_loss / len(training_loader)}")
 
         # Validation
-        loss_val = evaluation_fm(val_loader, model_best=model, epoch=e)
+        loss_val = evaluation_fm(val_loader, model_best=model, epoch=e, device=device)
         nll_val.append(loss_val)  # save for plotting
 
         if e == 0:

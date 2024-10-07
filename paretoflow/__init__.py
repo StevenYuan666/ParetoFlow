@@ -13,3 +13,4 @@ from paretoflow.flow import train_flow_matching
 from paretoflow.flow_net import FlowMatching, VectorFieldNet
 from paretoflow.multiple_model_predictor import train_proxies
 from paretoflow.multiple_model_predictor_net import MultipleModels
+from paretoflow.paretoflow_sample import ParetoFlowSampler

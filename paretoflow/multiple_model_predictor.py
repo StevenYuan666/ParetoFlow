@@ -31,7 +31,20 @@ def train_proxies(
     proxies_val_ratio: float = 0.1,
     proxies_batch_size: int = 32,
 ):
-
+    """
+    Train the proxies for the objectives.
+    :param X: np.ndarray: the input data
+    :param y: np.ndarray: the output data
+    :param name: str: the name of the model
+    :param save_dir: str: the path to save the model
+    :param tkwargs: dict: the keyword arguments for the model
+    :param proxy_lr: float: the learning rate for the proxies
+    :param proxy_lr_decay: float: the learning rate decay for the proxies
+    :param n_epochs: int: the number of epochs
+    :param proxies_val_ratio: float: the validation ratio
+    :param proxies_batch_size: int: the batch size
+    :return: str: the path to the model, torch.nn.Module: the model
+    """
     n_obj = y.shape[1]
     data_size, n_dim = tuple(X.shape)
     model_save_dir = save_dir
