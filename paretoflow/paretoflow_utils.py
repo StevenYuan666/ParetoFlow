@@ -1,3 +1,7 @@
+"""
+This file contains utility functions for the ParetoFlow package.
+"""
+
 from typing import List
 
 import numpy as np
@@ -7,6 +11,13 @@ from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 
 
 def get_N_non_dominated_solutions(N: int, all_x: np.ndarray, all_y: np.ndarray):
+    """
+    Get N non-dominated solutions from the input data.
+    :param N: int: the number of non-dominated solutions
+    :param all_x: np.ndarray: the input data
+    :param all_y: np.ndarray: the output data
+    :return: np.ndarray: the non-dominated solutions
+    """
     N_best_indexes = get_N_nondominated_indices(
         Y=all_y, num_ret=N, fronts=NonDominatedSorting().do(all_y)
     )
@@ -24,6 +35,11 @@ tkwargs = {
 
 
 def calc_crowding_distance(F) -> np.ndarray:
+    """
+    Calculate the crowding distance for the objective space values.
+    :param F: np.ndarray: the objective space values
+    :return: np.ndarray: the crowding distance
+    """
 
     if isinstance(F, list) or isinstance(F, np.ndarray):
         F = torch.tensor(F).to(**tkwargs)
@@ -70,6 +86,13 @@ def calc_crowding_distance(F) -> np.ndarray:
 
 
 def get_N_nondominated_indices(Y, num_ret, fronts=None) -> List[int]:
+    """
+    Get the indices of the N non-dominated solutions.
+    :param Y: np.ndarray: the objective space values
+    :param num_ret: int: the number of non-dominated solutions
+    :param fronts: List: the fronts
+    :return: List[int]: the indices of the non-dominated solutions
+    """
     assert num_ret >= 0
     if num_ret == 0:
         return []

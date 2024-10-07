@@ -4,6 +4,7 @@ which is used to generate samples
 """
 
 import math
+from typing import Callable, List, Tuple
 
 import numpy as np
 import torch
@@ -19,11 +20,21 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class ParetoFlowSampler:
+    """
+    This class contains the implementation of the ParetoFlowSampler class,
+    which is used to generate samples.
+    """
+
     def __init__(
         self,
         fm_model: FlowMatching,
         proxies: MultipleModels,
     ):
+        """
+        Initialize the ParetoFlowSampler class.
+        :param fm_model: FlowMatching: the FlowMatching model
+        :param proxies: MultipleModels: the MultipleModels model
+        """
         self.fm_model = fm_model
         self.proxies = proxies
         self.device = device
@@ -34,8 +45,14 @@ class ParetoFlowSampler:
         self.classifiers = [proxy for proxy in proxies.obj2model.values()]
 
     def weighted_conditional_vnet(
-        self, x_t, t, weights, gamma=2.0, t_threshold=0.8, **kwargs
-    ):
+        self,
+        x_t: torch.Tensor,
+        t: float,
+        weights: torch.Tensor,
+        gamma: float = 2.0,
+        t_threshold: float = 0.8,
+        **kwargs
+    ) -> torch.Tensor:
         """
         x_t: the noise sample at time t
         t: the time
@@ -90,7 +107,13 @@ class ParetoFlowSampler:
         )  # align eq5 in the paper, shape: (batch_size, D)
 
     @classmethod
-    def get_neighborhood_indices(cls, weight, objectives_weights, K, distance="cosine"):
+    def get_neighborhood_indices(
+        cls,
+        weight: torch.Tensor,
+        objectives_weights: torch.Tensor,
+        K: int,
+        distance: str = "cosine",
+    ) -> torch.Tensor:
         """
         weight: the weight for the objective
         objectives_weights: the weights for each objective
@@ -119,7 +142,9 @@ class ParetoFlowSampler:
 
     # Get Objectives Weights and Number of Samples we want to generate
     @classmethod
-    def calculate_objectives_weights(cls, M, num_solutions):
+    def calculate_objectives_weights(
+        cls, M: int, num_solutions: int
+    ) -> Tuple[torch.Tensor, int]:
         """
         Get weights for each objective, number of objectives is equal to number of classifiers
         n_partitions is equal to the number of samples we want to generate,
@@ -152,7 +177,7 @@ class ParetoFlowSampler:
         return objectives_weights, batch_size
 
     @classmethod
-    def calculate_angles(cls, a, b):
+    def calculate_angles(cls, a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
         """
         a: the first tensor, shape: (n, D)
         b: the second tensor, shape: (n, D)
@@ -166,9 +191,13 @@ class ParetoFlowSampler:
         return angle.unsqueeze(1)
 
     @classmethod
-    def get_ts_and_delta_t(cls, T, t_threshold=0.8, adaptive=False):
+    def get_ts_and_delta_t(
+        cls, T: int, t_threshold: float = 0.8, adaptive: bool = False
+    ) -> Tuple[torch.Tensor, Callable]:
         """
         T: the number of steps to generate the samples
+        t_threshold: the threshold to switch the sampling method
+        adaptive: whether to use the adaptive time steps
         return: the time steps and the step size
         """
         if adaptive:
@@ -200,14 +229,18 @@ class ParetoFlowSampler:
 
     def initialize_pareto_set(
         self,
-        batch_size,
-        objectives_weights=None,
-        methods="d_best",
-        all_x=None,
-        all_y=None,
-    ):
+        batch_size: int,
+        objectives_weights: torch.Tensor = None,
+        methods: str = "d_best",
+        all_x: np.ndarray = None,
+        all_y: np.ndarray = None,
+    ) -> List[Tuple[torch.Tensor, float]]:
         """
         batch_size: the number of samples we want to generate
+        objectives_weights: the weights for each objective
+        methods: the method to initialize the pareto set
+        all_x: the existing solutions
+        all_y: the existing scores
         return: the pareto set of the generated samples
         """
 
@@ -266,8 +299,21 @@ class ParetoFlowSampler:
 
     @classmethod
     def all_neighborhood_indices(
-        cls, batch_size, objectives_weights, K, distance="cosine"
-    ):
+        cls,
+        batch_size: int,
+        objectives_weights: torch.Tensor,
+        K: int,
+        distance: str = "cosine",
+    ) -> torch.Tensor:
+        """
+        batch_size: the number of samples we want to generate
+        objectives_weights: the weights for each objective
+        K: the number of samples we want to include in the neighborhood
+        distance: the distance metric to calculate the distance
+        between the weight and the weights of the objectives. The default is cosine angle
+        distance, but can be changed to Euclidean distance
+        return: the indices of the neighborhood samples
+        """
         # Calculate the neighborhood of the diverse samples
         neighborhood_indices = []
         for i in range(batch_size):
@@ -283,11 +329,19 @@ class ParetoFlowSampler:
         neighborhood_indices = torch.stack(neighborhood_indices, dim=0)
         return neighborhood_indices
 
-    def calculate_scores(self, batch_size, t, O, batch_diverse_samples, **kwargs):
+    def calculate_scores(
+        self,
+        batch_size: int,
+        t: float,
+        O: int,
+        batch_diverse_samples: torch.Tensor,
+        **kwargs
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
-        classifiers: a list of classifiers, each is a function that takes x
-        and returns the score on the i-th objective
-        merged_samples_x_1: the samples to predict the scores
+        batch_size: the number of samples we want to generate
+        t: the time
+        O: the number of offspring samples we want to generate
+        batch_diverse_samples: the diverse samples
         return: the scores for the samples, merged_samples_x_1, shape: (batch_size * O, D)
         """
         # Predict the scores for the diverse samples
@@ -326,10 +380,13 @@ class ParetoFlowSampler:
         return scores, merged_samples_x_1
 
     @classmethod
-    def get_angle_filter_mask(cls, angles, phi, batch_size):
+    def get_angle_filter_mask(
+        cls, angles: torch.Tensor, phi: torch.Tensor, batch_size: int
+    ) -> torch.Tensor:
         """
         angles: the angles between the predicted scores and the i-th objective weights
         phi: the threshold for the angles
+        batch_size: the number of samples we want to generate
         return: the filter mask for the angles
         """
         # shape: (batch_size, K * O, 1)
@@ -344,13 +401,14 @@ class ParetoFlowSampler:
         # If the angle is smaller than phi_i, we keep the sample, otherwise we set the score to -inf
         return angle_filter_mask
 
-    def repair_boundary(self, solutions, t, xl, xu):
+    def repair_boundary(
+        self, solutions: torch.Tensor, t: float, xl: torch.Tensor, xu: torch.Tensor
+    ) -> torch.Tensor:
         """
         solutions: the solutions to be repaired  # shape: (batch_size * O, D)
         xl: the lower bound of the solutions
         xu: the upper bound of the solutions
-        convert_to_x1: whether to convert the solutions to x_1 first
-        method: the method to repair the solutions
+        t: the time
         return: the repaired solutions # shape: (batch_size * O, D)
         """
         # Calculate the lower bound and upper bound at time t
@@ -373,7 +431,7 @@ class ParetoFlowSampler:
         return x_t
 
     @classmethod
-    def check_duplicates(cls, pareto_set):
+    def check_duplicates(cls, pareto_set: List[Tuple[torch.Tensor, float]]):
         """
         pareto_set: the pareto set to be checked. Tuple of (solution, score),
         solution is a tensor, score is a float
@@ -398,7 +456,7 @@ class ParetoFlowSampler:
         return len(solutions) - len(unique_solutions)
 
     @classmethod
-    def remove_duplicates(cls, pareto_set):
+    def remove_duplicates(cls, pareto_set: List[torch.Tensor]) -> List[torch.Tensor]:
         """
         pareto_set: the pareto set to be checked. List of solutions, each is a tensor
         return: the pareto set without duplicates
@@ -421,22 +479,40 @@ class ParetoFlowSampler:
 
     def sample(
         self,
-        all_x,
-        all_y,
-        T=1000,
-        O=10,
-        K=20,
-        num_solutions=256,
-        distance="cosine",
-        g_t=0.1,
-        init_method="d_best",
-        t_threshold=0.8,
-        adaptive=False,
-        gamma=2.0,
-        xl=None,
-        xu=None,
-    ):
-        """ """
+        all_x: np.ndarray,
+        all_y: np.ndarray,
+        T: int = 1000,
+        O: int = 10,
+        K: int = 20,
+        num_solutions: int = 256,
+        distance: str = "cosine",
+        g_t: float = 0.1,
+        init_method: str = "d_best",
+        t_threshold: float = 0.8,
+        adaptive: bool = False,
+        gamma: float = 2.0,
+        xl: np.ndarray = None,
+        xu: np.ndarray = None,
+    ) -> List[torch.Tensor]:
+        """
+        all_x: the existing solutions
+        all_y: the existing scores
+        T: the number of steps to generate the samples
+        O: the number of offspring samples we want to generate
+        K: the number of samples we want to include in the neighborhood
+        num_solutions: the number of new solutions we want to keep in the final pareto set
+        distance: the distance metric to calculate the distance
+        between the weight and the weights of the objectives. The default is cosine angle
+        distance, but can be changed to Euclidean distance
+        g_t: the noise level
+        init_method: the method to initialize the pareto set
+        t_threshold: the threshold to switch the sampling method
+        adaptive: whether to use the adaptive time steps
+        gamma: the gamma parameter
+        xl: the lower bound of the solutions
+        xu: the upper bound of the solutions
+        return: the pareto set of the generated samples
+        """
         # Obtain objectives weights and the number of samples we want to generate
         # shape: (batch_size, len(classifiers))
         objectives_weights, batch_size = FlowMatching.calculate_objectives_weights(
