@@ -1,3 +1,8 @@
+"""
+This module contains the utility functions for the examples.
+"""
+
+
 def set_seed(seed: int) -> None:
     import random
 

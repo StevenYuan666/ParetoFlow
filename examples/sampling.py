@@ -4,17 +4,22 @@ from utils import set_seed
 
 from paretoflow import FlowMatching, MultipleModels, ParetoFlowSampler, VectorFieldNet
 
+# Set the seed
 set_seed(0)
 
+# Load the data
 all_x = np.load("examples/data/zdt1-x-0.npy")
 all_y = np.load("examples/data/zdt1-y-0.npy")
 
+# Set the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# Create the flow matching model and load the saved model
 vnet = VectorFieldNet(all_x.shape[1])
 fm_model = FlowMatching(vnet=vnet, sigma=0.0, D=all_x.shape[1], T=1000)
 fm_model = torch.load("saved_fm_models/zdt1.model")
 
+# Create the proxies model and load the saved model
 proxies_model = MultipleModels(
     n_dim=all_x.shape[1],
     n_obj=all_y.shape[1],
