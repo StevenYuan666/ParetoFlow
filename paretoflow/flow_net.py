@@ -215,14 +215,14 @@ class FlowMatching(nn.Module):
         """
         # Euler method
         # sample x_0 first
-        x_t = self.sample_base(torch.empty(batch_size, self.D))
+        x_t = self.sample_base(torch.empty(batch_size, self.D)).to(torch.device("cuda"))
 
         # then go step-by-step to x_1 (data)
         ts = torch.linspace(0.0, 1.0, self.T)
         delta_t = ts[1] - ts[0]
 
         for t in ts[1:]:
-            t_embedding = self.time_embedding(torch.Tensor([t]))
+            t_embedding = self.time_embedding(torch.Tensor([t]).to(x_t.device))
             x_t = x_t + self.vnet(x_t + t_embedding) * delta_t
             # Stochastic Euler method
             if self.stochastic_euler:
