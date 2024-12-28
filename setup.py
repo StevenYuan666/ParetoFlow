@@ -42,4 +42,6 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Scientific/Engineering :: Mathematics",
     ],
+    long_description=open("long_description.md", "r").read(),
+    long_description_content_type="text/markdown",
 )
