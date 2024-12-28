@@ -126,8 +126,8 @@ from paretoflow import train_proxies, train_flow_matching, FlowMatching, Multipl
 from paretoflow import to_integers, to_logits, z_score_denormalize_x, z_score_normalize_x
 
 # Load the data
-all_x = np.load("examples/data/zdt1-x-0.npy")
-all_y = np.load("examples/data/zdt1-y-0.npy")
+all_x = np.load("examples/data/x.npy")
+all_y = np.load("examples/data/y.npy")
 
 # Normalize the data
 all_x_normalized, x_mean, x_std = z_score_normalize_x(all_x)
