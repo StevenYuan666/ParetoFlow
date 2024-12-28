@@ -1,0 +1,8 @@
+data_pruning: False 
+
+n_epochs: 200 
+batch_size: 128 
+# 128 will be better
+
+forward_lr: 0.001
+forward_lr_decay: 0.98 

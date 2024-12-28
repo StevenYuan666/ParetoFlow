@@ -1,0 +1,10 @@
+normalize_xs: False
+normalize_ys: True 
+to_logits: False
+
+is_discrete: True
+
+record_hist: False
+
+crossover: order
+mutation: inversion

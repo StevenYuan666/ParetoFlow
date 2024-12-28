@@ -1,0 +1,17 @@
+data_pruning: True 
+data_preserved_ratio: 0.2 
+
+n_epochs: 200 
+batch_size: 128 
+
+forward_lr: 0.001
+forward_lr_decay: 0.98 
+
+soft_label: True
+majority_voting: True
+Tmax: 200
+ft_lr: 0.001
+topk: 128
+interval: 200
+K: 10
+method: triteach

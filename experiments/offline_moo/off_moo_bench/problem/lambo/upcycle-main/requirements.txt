@@ -1,0 +1,4 @@
+pandas
+numpy
+s3fs==0.4.2
+randomname
