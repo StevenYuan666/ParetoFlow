@@ -7,8 +7,8 @@ from paretoflow import (
     MultipleModels,
     ParetoFlowSampler,
     VectorFieldNet,
-    z_score_denormalize_x,
-    z_score_normalize_x,
+    z_score_denormalize,
+    z_score_normalize,
 )
 
 # Set the seed
@@ -19,7 +19,8 @@ all_x = np.load("examples/data/zdt1-x-0.npy")
 all_y = np.load("examples/data/zdt1-y-0.npy")
 
 # Normalize the data
-all_x_normalized, x_mean, x_std = z_score_normalize_x(all_x)
+all_x_normalized, x_mean, x_std = z_score_normalize(all_x)
+all_y_normalized, y_mean, y_std = z_score_normalize(all_y)
 
 # Set the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -53,6 +54,6 @@ res_x, res_y = sampler.sample(
 )
 
 # Denormalize the data
-res_x_denormalized = z_score_denormalize_x(res_x, x_mean, x_std)
+res_x_denormalized = z_score_denormalize(res_x, x_mean, x_std)
 
 print(len(res_x_denormalized))

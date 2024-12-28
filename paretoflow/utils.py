@@ -121,7 +121,7 @@ def to_integers(x: np.ndarray, num_classes_on_each_position: list[int]):
     return np.concatenate(integers, axis=1)
 
 
-def z_score_normalize_x(x: np.ndarray):
+def z_score_normalize(x: np.ndarray):
     """
     This function is used to normalize the input data using z-score normalization.
     :param x: np.ndarray: the input data, with shape (n_samples, n_dim)
@@ -140,7 +140,7 @@ def z_score_normalize_x(x: np.ndarray):
     return x, x_mean, x_std
 
 
-def z_score_denormalize_x(x: np.ndarray, x_mean: np.ndarray, x_std: np.ndarray):
+def z_score_denormalize(x: np.ndarray, x_mean: np.ndarray, x_std: np.ndarray):
     """
     This function is used to denormalize the input data using z-score denormalization.
     :param x: np.ndarray: the input data, with shape (n_samples, n_dim)
@@ -156,7 +156,7 @@ def z_score_denormalize_x(x: np.ndarray, x_mean: np.ndarray, x_std: np.ndarray):
     return x
 
 
-def min_max_normalize_x(x: np.ndarray):
+def min_max_normalize(x: np.ndarray):
     """
     This function is used to normalize the input data using min-max normalization.
     :param x: np.ndarray: the input data, with shape (n_samples, n_dim)
@@ -170,7 +170,7 @@ def min_max_normalize_x(x: np.ndarray):
     return x, x_min, x_max
 
 
-def min_max_denormalize_x(x: np.ndarray, x_min: np.ndarray, x_max: np.ndarray):
+def min_max_denormalize(x: np.ndarray, x_min: np.ndarray, x_max: np.ndarray):
     """
     This function is used to denormalize the input data using min-max denormalization.
     :param x: np.ndarray: the input data, with shape (n_samples, n_dim)
