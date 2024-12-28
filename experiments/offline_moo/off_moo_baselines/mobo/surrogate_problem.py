@@ -1,8 +1,7 @@
 import numpy as np
 import torch
-from pymoo.core.problem import Problem
-
 from offline_moo.off_moo_baselines.mobo.mobo_utils import tkwargs
+from pymoo.core.problem import Problem
 
 
 class LCB_Problem(Problem):

@@ -16,11 +16,10 @@ from botorch.optim.optimize import optimize_acqf
 from botorch.utils.transforms import normalize, unnormalize
 from gpytorch.mlls.sum_marginal_log_likelihood import ExactMarginalLogLikelihood
 from numpy import ndarray
-from torch import Tensor
-from utils import get_N_nondominated_index
-
 from offline_moo.off_moo_baselines.mobo.mobo_utils import tkwargs
 from offline_moo.off_moo_bench.task_set import *
+from torch import Tensor
+from utils import get_N_nondominated_index
 
 
 class MOBOJESContinuous:

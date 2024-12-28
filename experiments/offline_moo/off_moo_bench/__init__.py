@@ -12,7 +12,6 @@ except:
     pass
 
 import numpy as np
-
 from offline_moo.off_moo_bench.registration import make, register, registry, spec
 
 try:

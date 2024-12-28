@@ -8,11 +8,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import wandb
+from offline_moo.off_moo_baselines.data import spearman_correlation, tkwargs
 from torch.autograd import Variable
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-
-from offline_moo.off_moo_baselines.data import spearman_correlation, tkwargs
 
 
 def get_trainer(train_mode):
@@ -941,11 +940,10 @@ class TriMentoringTrainer(SingleModelBaseTrainer):
         val_loader: Optional[DataLoader] = None,
         test_loader: Optional[DataLoader] = None,
     ):
-        from utils import set_seed
-
         from offline_moo.off_moo_baselines.multiple_models.external.tri_mentoring_utils import (
             adjust_learning_rate,
         )
+        from utils import set_seed
 
         set_seed(model.seed)
 

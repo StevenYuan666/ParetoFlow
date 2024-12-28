@@ -2,10 +2,9 @@ import math
 
 import numpy as np
 import torch
-from torch import optim
-
 from offline_moo.off_moo_bench.problem.base import BaseProblem
 from offline_moo.off_moo_bench.problem.utils import constraint
+from torch import optim
 
 
 class SyntheticProblem(BaseProblem):

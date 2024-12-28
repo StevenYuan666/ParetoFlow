@@ -5,7 +5,6 @@ import sys
 import gym
 import numpy as np
 import torch
-
 from offline_moo.off_moo_bench.problem.base import BaseProblem
 from offline_moo.off_moo_bench.problem.morl.collect_helper import *
 

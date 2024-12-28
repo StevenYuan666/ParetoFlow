@@ -3,10 +3,9 @@ import os
 from typing import Optional, Union
 
 import numpy as np
-from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
-
 from offline_moo.off_moo_bench.disk_resource import DiskResource
 from offline_moo.off_moo_bench.utils import get_N_nondominated_indices
+from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 
 
 class DatasetBuilder(abc.ABC):

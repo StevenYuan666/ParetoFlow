@@ -2,9 +2,8 @@ import os
 
 import numpy as np
 import torch
-from pymoo.core.problem import Problem
-
 from offline_moo.off_moo_bench.problem.base import BaseProblem
+from pymoo.core.problem import Problem
 
 
 class MOKP(BaseProblem):

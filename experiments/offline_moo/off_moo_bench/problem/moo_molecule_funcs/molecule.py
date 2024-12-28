@@ -7,7 +7,6 @@ f = MOOMoleculeFunction(list(SUPPORTED_PROPERTIES.keys()))
 
 import numpy as np
 import torch
-
 from offline_moo.off_moo_bench.problem.base import BaseProblem
 
 

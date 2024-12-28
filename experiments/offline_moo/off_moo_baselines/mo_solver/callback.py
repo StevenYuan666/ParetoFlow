@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import wandb
 from matplotlib import cm, cycler
-
 from offline_moo.off_moo_bench.evaluation.metrics import hv
 
 

@@ -1,8 +1,7 @@
 import numpy as np
+from offline_moo.off_moo_bench.task_set import MORL
 from pymoo.indicators.hv import Hypervolume
 from pymoo.indicators.igd import IGD
-
-from offline_moo.off_moo_bench.task_set import MORL
 
 
 def hv(nadir_point, y, task_name):

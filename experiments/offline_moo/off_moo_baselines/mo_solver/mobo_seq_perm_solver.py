@@ -11,6 +11,7 @@ from botorch.models import FixedNoiseGP
 from botorch.test_functions.base import MultiObjectiveTestProblem
 from gpytorch.kernels import Kernel
 from numpy import ndarray
+from offline_moo.off_moo_bench.evaluation.metrics import hv
 from pymoo.algorithms.moo.nsga2 import NSGA2, NonDominatedSorting
 from pymoo.core.problem import Problem
 from pymoo.core.repair import Repair
@@ -21,8 +22,6 @@ from pymoo.operators.mutation.pm import PM
 from pymoo.operators.sampling.rnd import FloatRandomSampling
 from pymoo.optimize import minimize
 from torch import Tensor
-
-from offline_moo.off_moo_bench.evaluation.metrics import hv
 
 tkwargs = {
     "dtype": torch.double,

@@ -3,7 +3,6 @@ import os
 
 import numpy as np
 from evoxbench.benchmarks import NASBench201Benchmark
-
 from offline_moo.off_moo_bench.problem.base import BaseProblem
 
 index_to_op_str = {

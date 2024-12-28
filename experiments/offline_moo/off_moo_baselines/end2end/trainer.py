@@ -5,11 +5,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 import wandb
-from torch.optim import Adam
-from torch.utils.data import DataLoader
-
 from offline_moo.off_moo_baselines.data import spearman_correlation, tkwargs
 from offline_moo.off_moo_baselines.util.pcgrad import PCGrad
+from torch.optim import Adam
+from torch.utils.data import DataLoader
 
 
 def get_trainer(train_mode):

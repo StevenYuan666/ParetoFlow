@@ -5,9 +5,8 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 
 import numpy as np
-from utils import read_data
-
 from offline_moo.off_moo_bench.problem import get_problem
+from utils import read_data
 
 # from evoxbench.database.init import config
 # import os

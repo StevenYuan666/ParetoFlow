@@ -6,15 +6,14 @@ import math
 import numpy as np
 import torch
 import torch.nn as nn
-from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
-from tqdm import tqdm
-
 from gfmo_utils import get_reference_directions
 from offline_moo.off_moo_bench.evaluation.metrics import hv
 from offline_moo.off_moo_bench.problem.dtlz import DTLZ
 from offline_moo.off_moo_bench.problem.synthetic_func import SyntheticProblem
 from offline_moo.off_moo_bench.utils import get_N_nondominated_indices
 from offline_moo.utils import get_quantile_solutions
+from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
+from tqdm import tqdm
 
 # get the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

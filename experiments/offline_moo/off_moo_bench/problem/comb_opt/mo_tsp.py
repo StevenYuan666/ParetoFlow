@@ -2,10 +2,9 @@ import os
 
 import numpy as np
 import torch
+from offline_moo.off_moo_bench.problem.base import BaseProblem
 from pymoo.core.problem import Problem
 from pymoo.core.repair import Repair
-
-from offline_moo.off_moo_bench.problem.base import BaseProblem
 
 from .MOTSProblemDef import augment_xy_data_by_64_fold_2obj, get_random_problems
 

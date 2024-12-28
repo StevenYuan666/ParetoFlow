@@ -2,10 +2,9 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+from offline_moo.off_moo_bench.problem import get_problem
 from pymoo.algorithms.moo.nsga2 import NonDominatedSorting
 from utils import base_path
-
-from offline_moo.off_moo_bench.problem import get_problem
 
 
 def plot_all(env_names, model_type):

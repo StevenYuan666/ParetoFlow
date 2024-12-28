@@ -2,10 +2,8 @@ import json
 import os
 
 import numpy as np
-import torch
-from torch.utils.data import DataLoader
-
 import offline_moo.off_moo_bench as ob
+import torch
 from gfmo_args import parse_args
 from gfmo_nets import FlowMatching, VectorFieldNet
 from gfmo_utils import (
@@ -20,6 +18,7 @@ from gfmo_utils import (
 )
 from offline_moo.off_moo_bench.evaluation.metrics import hv
 from offline_moo.utils import get_quantile_solutions, set_seed
+from torch.utils.data import DataLoader
 
 # get the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

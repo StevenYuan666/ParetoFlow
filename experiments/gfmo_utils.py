@@ -3,12 +3,11 @@ import os
 import numpy as np
 import torch
 import torch.nn as nn
+from gfmo_reference_directions import UniformReferenceDirectionFactory
+from offline_moo.off_moo_baselines.data import spearman_correlation
 from torch.optim import Adam
 from torch.utils.data import DataLoader, Dataset, TensorDataset, random_split
 from tqdm import tqdm
-
-from gfmo_reference_directions import UniformReferenceDirectionFactory
-from offline_moo.off_moo_baselines.data import spearman_correlation
 
 tkwargs = {
     "device": torch.device("cuda" if torch.cuda.is_available() else "cpu"),

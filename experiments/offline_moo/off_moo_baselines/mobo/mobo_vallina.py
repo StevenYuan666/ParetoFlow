@@ -23,11 +23,6 @@ from gpytorch.mlls.sum_marginal_log_likelihood import (
     SumMarginalLogLikelihood,
 )
 from numpy import ndarray
-from pymoo.algorithms.moo.nsga2 import NSGA2
-from pymoo.optimize import minimize
-from torch import Tensor
-from utils import get_N_nondominated_index
-
 from offline_moo.off_moo_baselines.mobo.kernel import (
     OrderKernel,
     TransformedCategorical,
@@ -36,6 +31,10 @@ from offline_moo.off_moo_baselines.mobo.mobo_utils import tkwargs
 from offline_moo.off_moo_baselines.mobo.surrogate_problem import LCB_Problem
 from offline_moo.off_moo_bench.collecter import get_operator_dict
 from offline_moo.off_moo_bench.task_set import *
+from pymoo.algorithms.moo.nsga2 import NSGA2
+from pymoo.optimize import minimize
+from torch import Tensor
+from utils import get_N_nondominated_index
 
 
 class MOBOContinuous:

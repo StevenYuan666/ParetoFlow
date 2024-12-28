@@ -10,9 +10,6 @@ import wandb
 BASE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 sys.path.append(BASE_PATH)
 
-from pymoo.algorithms.moo.nsga2 import NSGA2
-from utils import get_quantile_solutions, set_seed
-
 import offline_moo.off_moo_bench as ob
 from offline_moo.off_moo_baselines.data import get_dataloader, tkwargs
 from offline_moo.off_moo_baselines.end2end.nets import End2EndModel
@@ -26,6 +23,8 @@ from offline_moo.off_moo_bench.collecter import get_operator_dict
 from offline_moo.off_moo_bench.evaluation.metrics import hv
 from offline_moo.off_moo_bench.evaluation.plot import plot_y
 from offline_moo.off_moo_bench.task_set import *
+from pymoo.algorithms.moo.nsga2 import NSGA2
+from utils import get_quantile_solutions, set_seed
 
 
 def run(config: dict):

@@ -1,6 +1,5 @@
 import torch
 from gpytorch.kernels import Kernel
-
 from offline_moo.off_moo_baselines.mobo.mobo_utils import tkwargs
 from offline_moo.off_moo_baselines.util.data_structure import FeatureCache
 

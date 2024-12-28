@@ -2,9 +2,8 @@ import os
 
 import numpy as np
 import torch
-from pymoo.core.repair import Repair
-
 from offline_moo.off_moo_bench.problem.base import BaseProblem
+from pymoo.core.repair import Repair
 
 from .MOCVRProblemDef import augment_xy_data_by_8_fold, get_random_problems
 

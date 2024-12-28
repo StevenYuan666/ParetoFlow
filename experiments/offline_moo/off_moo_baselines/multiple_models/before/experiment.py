@@ -18,10 +18,9 @@ def SyntheticFunction(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import SyntheticFunction as tasks_to_run
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -99,10 +98,9 @@ def RESuite(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import RESuite as tasks_to_run
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -180,10 +178,9 @@ def MONASSequence(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import MONASSequence as tasks_to_run
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -261,10 +258,9 @@ def MONASLogits(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import MONASLogits as tasks_to_run
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -342,10 +338,9 @@ def MOCOPermutation(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import MOCOPermutation as tasks_to_run
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -423,10 +418,9 @@ def MOCOContinuous(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import MOCOContinuous as tasks_to_run
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -504,10 +498,9 @@ def MORL(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import MORL as tasks_to_run
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -585,12 +578,11 @@ def ScientificDesignContinuous(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import (
         ScientificDesignContinuous as tasks_to_run,
     )
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run
@@ -668,12 +660,11 @@ def ScientificDesignSequence(
     num_samples=1,
 ):
 
-    from ray.tune import run
-
     from offline_moo.off_moo_baselines.multiple import multiple_run
     from offline_moo.off_moo_bench.task_set import (
         ScientificDesignSequence as tasks_to_run,
     )
+    from ray.tune import run
 
     if len(tasks) == 0:
         tasks = tasks_to_run

@@ -1,5 +1,4 @@
 import numpy as np
-
 from offline_moo.off_moo_bench.problem.morl.base import MORLProblem
 
 

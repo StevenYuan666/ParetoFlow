@@ -3,11 +3,10 @@ import os
 import numpy as np
 import pandas as pd
 import torch
+from offline_moo.off_moo_bench.problem.base import BaseProblem
 from pymoo.core.population import Population
 from pymoo.core.problem import ElementwiseProblem
 from pymoo.core.repair import Repair
-
-from offline_moo.off_moo_bench.problem.base import BaseProblem
 
 
 class PortfolioBaseProblem(ElementwiseProblem):

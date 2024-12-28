@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-
 from offline_moo.off_moo_bench.problem.base import BaseProblem
 
 from .lambo.tasks.regex import RegexTask as InnerRegexTask

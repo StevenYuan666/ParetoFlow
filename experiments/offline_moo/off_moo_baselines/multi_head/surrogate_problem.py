@@ -1,7 +1,6 @@
 import torch
-from pymoo.core.problem import Problem
-
 from offline_moo.off_moo_baselines.data import tkwargs
+from pymoo.core.problem import Problem
 
 
 class MultiHeadSurrogateProblem(Problem):

@@ -6,12 +6,11 @@ import torch
 from algorithm.mo_solver.base import Solver
 from algorithm.mo_solver.external import lhs
 from botorch.test_functions.base import MultiObjectiveTestProblem
+from offline_moo.off_moo_bench.evaluation.metrics import hv
 from pymoo.algorithms.moo.nsga2 import NonDominatedSorting
 from pymoo.core.problem import Problem
 from torch import Tensor
 from utils import get_N_nondominated_index
-
-from offline_moo.off_moo_bench.evaluation.metrics import hv
 
 tkwargs = {
     "dtype": torch.double,

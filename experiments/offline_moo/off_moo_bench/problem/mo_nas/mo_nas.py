@@ -15,14 +15,13 @@ from evoxbench.benchmarks import (
     ResNet50DBenchmark,
     TransformerBenchmark,
 )
+from offline_moo.off_moo_bench.problem.base import BaseProblem
 
 # from pymoo.operators.repair.rounding import RoundingRepair
 from pymoo.core.repair import Repair
 from pymoo.operators.crossover.sbx import SBX
 from pymoo.operators.mutation.pm import PM
 from pymoo.operators.sampling.rnd import FloatRandomSampling
-
-from offline_moo.off_moo_bench.problem.base import BaseProblem
 
 # from evoxbench.database.init import config
 # mo_nas_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "m2bo_bench", "problem", "mo_nas")
