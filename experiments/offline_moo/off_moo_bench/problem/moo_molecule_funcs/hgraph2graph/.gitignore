@@ -1,0 +1,6 @@
+*.pyc
+*model.iter*
+*LOG*
+results*
+splits/
+*.pkl

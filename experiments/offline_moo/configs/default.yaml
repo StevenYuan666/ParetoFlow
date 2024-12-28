@@ -1,0 +1,12 @@
+results_dir: ./results 
+model_save_dir: ./model 
+
+use_wandb: False 
+run_type: train 
+
+seed: 2024 
+retrain_model: True 
+num_solutions: 256
+
+solver_n_gen: 50
+solver_init_method: nds

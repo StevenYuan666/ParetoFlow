@@ -1,0 +1,3 @@
+_target_: lambo.acquisitions.ehvi.NoisyEHVI
+num_samples: 2
+batch_size: ${task.batch_size}
