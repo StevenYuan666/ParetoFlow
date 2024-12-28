@@ -1,4 +1,7 @@
 # ParetoFlow
+This repository contains the official implementation for the paper "ParetoFlow: Guided Flows in Multi-Objective Optimization". This repository is released for re-running the experiments in the paper.
+
+Moreover, to ease any future extension of this work, we provide a pip installable package [ParetoFlow](https://pypi.org/project/paretoflow/).
 
 ## Installation
 
@@ -71,4 +74,13 @@ python examples/sampling.py
 If you find ParetoFlow useful in your research, please consider citing:
 
 ```bibtex
+@misc{yuan2024paretoflowguidedflowsmultiobjective,
+      title={ParetoFlow: Guided Flows in Multi-Objective Optimization}, 
+      author={Ye Yuan and Can Chen and Christopher Pal and Xue Liu},
+      year={2024},
+      eprint={2412.03718},
+      archivePrefix={arXiv},
+      primaryClass={cs.CE},
+      url={https://arxiv.org/abs/2412.03718}, 
+}
 ```
