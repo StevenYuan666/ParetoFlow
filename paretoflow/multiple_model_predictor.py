@@ -33,8 +33,8 @@ def train_proxies(
 ):
     """
     Train the proxies for the objectives.
-    :param X: np.ndarray: the input data
-    :param y: np.ndarray: the output data
+    :param X: np.ndarray: the input data, with shape (n_samples, n_dim)
+    :param y: np.ndarray: the output data, with shape (n_samples, n_obj)
     :param name: str: the name of the model
     :param save_dir: str: the path to save the model
     :param tkwargs: dict: the keyword arguments for the model

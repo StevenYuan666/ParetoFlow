@@ -2,7 +2,14 @@ import numpy as np
 import torch
 from utils import set_seed
 
-from paretoflow import FlowMatching, MultipleModels, ParetoFlowSampler, VectorFieldNet
+from paretoflow import (
+    FlowMatching,
+    MultipleModels,
+    ParetoFlowSampler,
+    VectorFieldNet,
+    z_score_denormalize_x,
+    z_score_normalize_x,
+)
 
 # Set the seed
 set_seed(0)
@@ -10,6 +17,9 @@ set_seed(0)
 # Load the data
 all_x = np.load("examples/data/zdt1-x-0.npy")
 all_y = np.load("examples/data/zdt1-y-0.npy")
+
+# Normalize the data
+all_x_normalized, x_mean, x_std = z_score_normalize_x(all_x)
 
 # Set the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -42,4 +52,7 @@ res_x, res_y = sampler.sample(
     xu=np.array([1.0] * all_x.shape[1]),
 )
 
-print(len(res_x))
+# Denormalize the data
+res_x_denormalized = z_score_denormalize_x(res_x, x_mean, x_std)
+
+print(len(res_x_denormalized))
