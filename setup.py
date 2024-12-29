@@ -5,7 +5,8 @@ Generative Flow Models with Multi Predictors Guidance to approximate the Pareto 
 
 from setuptools import setup
 
-from paretoflow import __author__, __credits__, __version__
+__version__ = "0.1.4"
+__author__ = "Ye Yuan, Can Chen"
 
 setup(
     name="paretoflow",
@@ -15,13 +16,16 @@ setup(
     url="https://github.com/StevenYuan666/ParetoFlow",
     author=__author__,
     author_email="ye.yuan3@mail.mcgill.ca",
-    credits=__credits__,
     license="MIT License",
     packages=["paretoflow"],
     python_requires=">=3.9",
     keywords="optimization",
     install_requires=[
         "pymoo>=0.6.0",
+        "numpy>=1.23.2",
+        "scipy>=1.10.1",
+        "torch>=2.0.1",
+        "tqdm>=4.66.5",
     ],
     platforms="any",
     classifiers=[

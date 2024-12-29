@@ -96,7 +96,6 @@ bash scripts/gfmo_all_exps.sh
 ```bash
 conda create -n paretoflow python=3.10
 conda activate paretoflow
-pip install -r requirements.txt
 pip install paretoflow
 ```
 
@@ -105,7 +104,6 @@ Or Start locally:
 ```bash
 conda create -n paretoflow python=3.10
 conda activate paretoflow
-pip install -r requirements.txt
 git clone https://github.com/StevenYuan666/ParetoFlow.git
 cd ParetoFlow
 pip install -e .
@@ -120,35 +118,72 @@ When having discrete features, we need to convert the discrete features to conti
 In our implementation, we support both z-score normalization and min-max normalization.
 In our paper, we use z-score normalization for training the proxies and flow matching model. Min-max normalization is used for calculating the hypervolume, aligining with [offline-moo](https://github.com/lamda-bbo/offline-moo?tab=readme-ov-file#offline-multi-objective-optimization).
 
-If you have your data as `x.npy` and `y.npy`, you can use the following code to train the proxies and flow matching model (continuous features for illustration, see the examples for discrete features):
+If you have your data as `x.npy` and `y.npy`, you can use the following code to train the proxies and flow matching model (continuous features for illustration, see the `examples/discrete_examples.py` for discrete features):
 ```python
-from paretoflow import train_proxies, train_flow_matching, FlowMatching, MultipleModels, ParetoFlowSampler, VectorFieldNet
-from paretoflow import to_integers, to_logits, z_score_denormalize_x, z_score_normalize_x
+import numpy as np
+from paretoflow import ParetoFlow
 
 # Load the data
-all_x = np.load("examples/data/x.npy")
-all_y = np.load("examples/data/y.npy")
+all_x = np.load("examples/data/zdt1-x-0.npy")
+all_y = np.load("examples/data/zdt1-y-0.npy")
 
-# Normalize the data
-all_x_normalized, x_mean, x_std = z_score_normalize_x(all_x)
+# If need to train the flow matching and proxies models
+# Initialize the ParetoFlow sampler
+pf = ParetoFlow(
+    task_name="zdt1",
+    input_x=all_x,
+    input_y=all_y,
+    x_lower_bound=np.array([0.0] * all_x.shape[1]),
+    x_upper_bound=np.array([1.0] * all_x.shape[1]),
+)
 
-# Train the proxies model
-proxies_model = train_proxies(all_x_normalized, all_y, device="cuda")
+# Sample the Pareto Set
+res_x, res_y = pf.sample()
 
-# Train the flow matching model
-fm_model = train_flow_matching(all_x_normalized, device="cuda")
-
-# Create the sampler
-sampler = ParetoFlowSampler(fm_model, proxies_model)
-
-# Sample the data
-res_x = sampler.sample(n_samples=1000)
-
-# Denormalize the data
-res_x_denormalized = z_score_denormalize_x(res_x, x_mean, x_std)
-
-print(res_x_denormalized)
+print(len(res_x))
 ```
+
+Or you can load the pre-trained flow matching and proxies models:
+```python
+import numpy as np
+import torch
+from paretoflow import ParetoFlow, VectorFieldNet, FlowMatching, MultipleModels
+
+# If load pre-trained flow matching and proxies models
+# Initialize the ParetoFlow sampler
+vnet = VectorFieldNet(all_x.shape[1])
+fm_model = FlowMatching(vnet=vnet, sigma=0.0, D=all_x.shape[1], T=1000)
+fm_model = torch.load("saved_fm_models/zdt1.model")
+
+# Create the proxies model and load the saved model
+proxies_model = MultipleModels(
+    n_dim=all_x.shape[1],
+    n_obj=all_y.shape[1],
+    train_mode="Vanilla",
+    hidden_size=[2048, 2048],
+    save_dir="saved_proxies/",
+    save_prefix="MultipleModels-Vanilla-zdt1",
+)
+proxies_model.load()
+
+pf = ParetoFlow(
+    task_name="zdt1",
+    input_x=all_x,
+    input_y=all_y,
+    x_lower_bound=np.array([0.0] * all_x.shape[1]),
+    x_upper_bound=np.array([1.0] * all_x.shape[1]),
+    load_pretrained_fm=True,
+    load_pretrained_proxies=True,
+    fm_model=fm_model,
+    proxies=proxies_model,
+)
+
+res_x, res_y = pf.sample()
+
+print(len(res_x))
+```
+
+**More Importantly**, we also allow users to pass in their own pretrained flow matching and proxies models. We require the flow matching model to be a `nn.Module` object and also pass in two key arguments `vnet` and `time_embedding`, which are both `nn.Module` objects. The `vnet` is the network approximation for the vector field in the flow matching model, and the `time_embedding` is a mapping from continuous time between [0, 1] to the embedding space. See more details in the docstrings of the `ParetoFlow` class.
 
 ### Examples
 ```bash
@@ -156,6 +191,11 @@ python examples/train_fm.py
 python examples/train_proxies.py
 python examples/sampling.py
 ```
+
+## Future Works
+- [ ] Refactor ParetoFlow as an optimization algorithm in the `pymoo` package.
+- [ ] Support using ParetoFlow on `problems` in the `pymoo` package.
+- [ ] Merge ParetoFlow with the `pymoo` package.
 
 ## Citation
 
