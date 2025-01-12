@@ -5,7 +5,7 @@ Generative Flow Models with Multi Predictors Guidance to approximate the Pareto 
 
 from setuptools import setup
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = "Ye Yuan, Can Chen"
 
 setup(
