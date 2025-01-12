@@ -1,0 +1,17 @@
+data_pruning: True 
+data_preserved_ratio: 0.2 
+
+n_epochs: 200
+batch_size: 128 
+
+forward_lr: 0.0003
+forward_lr_decay: 0.98 
+
+alpha: 1.
+sol_x_opt_lr: 0.003
+coef_stddev: 0.0
+inner_lr: 0.005
+steps_per_update: 20
+region: 4.
+updates: 300
+warmup_epochs: 50

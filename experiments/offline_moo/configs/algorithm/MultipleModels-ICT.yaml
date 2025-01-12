@@ -1,0 +1,27 @@
+data_pruning: True 
+data_preserved_ratio: 0.2 
+
+n_epochs: 200 
+batch_size: 128 
+
+forward_lr: 0.001
+forward_lr_decay: 0.98 
+
+reweight_mode: top128
+ft_lr: 0.1
+alpha: 0.001
+beta: 0.3
+if_coteach: True
+if_reweight: True 
+num_coteaching: 8
+Tmax: 100
+topk: 128
+K: 128
+wd: 0.0
+interval: 100
+mu: 0
+std: 1
+noise_coefficient: 0.1
+clamp_norm: 1
+clamp_min: -0.2
+clamp_max: 0.2

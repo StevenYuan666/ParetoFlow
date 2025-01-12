@@ -1,0 +1,9 @@
+data_pruning: False 
+
+permutation_n_gen: 200
+sequence_n_gen: 200
+
+train_gp_data_size: 256
+
+permutation_pop_size: 50
+sequence_pop_size: 50

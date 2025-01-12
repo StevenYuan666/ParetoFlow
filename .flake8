@@ -1,0 +1,5 @@
+[flake8]
+exclude = build, paretoflow.egg-info, .git, .mypy_cache, .pytest_cache, .tox, .venv, .vscode, __pycache__
+max-line-length = 100
+per-file-ignores = __init__.py:F401
+ignore = E741, W503, E203, E266, E261, E265, E271, E272, E302, E305, E402, E501, E722, E731, F401, F402, F403, F405, F541, F811, F821, F841, W291, W292, W293, W391, W504, W605

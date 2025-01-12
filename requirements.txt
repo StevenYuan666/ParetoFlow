@@ -1,0 +1,8 @@
+numpy==1.23.2
+scipy==1.10.1
+setuptools==75.1.0
+torch==2.0.1 --index-url https://download.pytorch.org/whl/cu118
+tqdm==4.66.5
+isort==5.13.2
+black==24.8.0
+flake8==7.1.1
