@@ -151,6 +151,7 @@ python examples/discrete_examples.py
 ```
 
 ## Future Works
+- [ ] Refactor the constructor of ParetoFlow by splitting it to two seprate methods `train()` and `load()`, so that users only need to pass in the basic arguments when instantiating the ParetoFlow class. After that, one can call `train()` to train the flow matching and proxies models, or call `load()` to load the pre-trained flow matching and proxies models.
 - [ ] Refactor ParetoFlow as an optimization algorithm in the `pymoo` package.
 - [ ] Support using ParetoFlow on `problems` in the `pymoo` package.
 - [ ] Merge ParetoFlow with the `pymoo` package.
