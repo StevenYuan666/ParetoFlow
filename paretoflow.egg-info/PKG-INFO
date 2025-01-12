@@ -120,6 +120,11 @@ print(len(res_x))
 
 **More Importantly**, we also allow users to pass in their own pretrained flow matching and proxies models. We require the flow matching model to be a `nn.Module` object and also pass in two key arguments `vnet` and `time_embedding`, which are both `nn.Module` objects. The `vnet` is the network approximation for the vector field in the flow matching model, and the `time_embedding` is a mapping from continuous time between [0, 1] to the embedding space. See more details in the docstrings of the `ParetoFlow` class.
 
+## Future Works
+- [ ] Refactor ParetoFlow as an optimization algorithm in the `pymoo` package.
+- [ ] Support using ParetoFlow on `problems` in the `pymoo` package.
+- [ ] Merge ParetoFlow with the `pymoo` package.
+
 # Citation
 
 If you find ParetoFlow useful in your research, please consider citing:

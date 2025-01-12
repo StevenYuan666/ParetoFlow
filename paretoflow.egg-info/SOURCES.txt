@@ -12,6 +12,7 @@ paretoflow/multiple_model_predictor_net.py
 paretoflow/paretoflow.py
 paretoflow/paretoflow_utils.py
 paretoflow/predictor_utils.py
+paretoflow/task.py
 paretoflow/utils.py
 paretoflow.egg-info/PKG-INFO
 paretoflow.egg-info/SOURCES.txt

@@ -17,6 +17,7 @@ from paretoflow.flow_net import FlowMatching
 from paretoflow.multiple_model_predictor import train_proxies
 from paretoflow.multiple_model_predictor_net import MultipleModels
 from paretoflow.paretoflow_utils import get_N_non_dominated_solutions
+from paretoflow.task import Task
 from paretoflow.utils import (
     min_max_denormalize,
     min_max_normalize,
@@ -37,16 +38,7 @@ class ParetoFlow:
 
     def __init__(
         self,
-        task_name: str,
-        input_x: np.ndarray,
-        input_y: np.ndarray,
-        x_lower_bound: np.ndarray,
-        x_upper_bound: np.ndarray,
-        is_discrete: bool = False,
-        normalize_x: bool = True,
-        normalize_y: bool = True,
-        normalization_method: str = "z_score",
-        soft_interpolation: float = 0.6,
+        task: Task,
         load_pretrained_fm: bool = False,
         load_pretrained_proxies: bool = False,
         fm_model: nn.Module = None,
@@ -58,17 +50,7 @@ class ParetoFlow:
     ):
         """
         Initialize the ParetoFlow class
-        :param task_name: str: the name of the task
-        :param input_x: np.ndarray: the input data with shape (n_samples, n_features) or (n_samples, sequence_length)
-        :param input_y: np.ndarray: the input labels with shape (n_samples, n_objectives)
-        :param x_lower_bound: np.ndarray: the lower bound of the input data with shape (n_features,) or (sequence_length,)
-        :param x_upper_bound: np.ndarray: the upper bound of the input data with shape (n_features,) or (sequence_length,)
-        :param is_discrete: bool: whether the input data is discrete
-        :param normalize_x: bool: whether to normalize the input data
-        :param normalize_y: bool: whether to normalize the input labels
-        :param normalization_method: str: the method to normalize the input data, can be "z_score" or "min_max"
-        :param num_classes_on_each_position: List[int]: the number of classes on each position
-        :param soft_interpolation: float: the soft interpolation parameter for to_logits
+        :param task: Task: the task to solve with ParetoFlow
         :param load_pretrained_fm: bool: whether to load the pretrained flow matching model
         :param load_pretrained_proxies: bool: whether to load the pretrained proxy models
         :param fm_model: nn.Module: the flow matching model
@@ -79,39 +61,8 @@ class ParetoFlow:
         :param time_embedding: nn.Module: the time embedding model
         """
         self.device = device
-        # Load the input data
-        self.task_name = task_name
-        self.input_x = input_x.copy()
-        self.input_y = input_y.copy()
-        self.xl = x_lower_bound.copy()
-        self.xu = x_upper_bound.copy()
-        self.is_discrete = is_discrete
-        self.normalize_x = normalize_x
-        self.normalize_y = normalize_y
-        self.normalization_method = normalization_method
-        self.num_classes_on_each_position = x_upper_bound.copy().tolist()
-        self.soft_interpolation = soft_interpolation
         self.validation_size = validation_size
-        # Handle the discrete features
-        if self.is_discrete is not None and self.is_discrete:
-            assert (
-                self.num_classes_on_each_position is not None
-            ), "Number of classes on each position is not provided."
-            self.input_x = to_logits(
-                self.input_x, self.num_classes_on_each_position, self.soft_interpolation
-            )
-
-        # normalize the data
-        if self.normalize_x:
-            if self.normalization_method == "z_score":
-                self.input_x, self.x_mean, self.x_std = z_score_normalize(self.input_x)
-            elif self.normalization_method == "min_max":
-                self.input_x, self.x_min, self.x_max = min_max_normalize(self.input_x)
-        if self.normalize_y:
-            if self.normalization_method == "z_score":
-                self.input_y, self.y_mean, self.y_std = z_score_normalize(self.input_y)
-            elif self.normalization_method == "min_max":
-                self.input_y, self.y_min, self.y_max = min_max_normalize(self.input_y)
+        self.task = task
 
         # Handle the flow matching model
         # Load the pretrained models
@@ -132,21 +83,21 @@ class ParetoFlow:
                 assert vnet is not None, "vnet is not provided."
                 assert time_embedding is not None, "time_embedding is not provided."
                 self.fm_model = fm_model.to(device)
-                self.D = self.input_x.shape[1]
+                self.D = task.n_dim
                 self.sigma = sigma
                 self.vnet = vnet
                 self.time_embedding = time_embedding
         # If the pretrained models are not provided, we need to train the models
         else:
             # Train the generative flow matching model
-            print(f"Training the flow matching model for {self.task_name}...")
+            print(f"Training the flow matching model for {task.name}...")
             val_loss, saved_path, fm_model = train_flow_matching(
-                self.input_x,
+                task.input_x,
                 device,
-                self.task_name,
+                task.name,
                 validation_size=self.validation_size,
             )
-            print(f"Finished training the flow matching model for {self.task_name}.")
+            print(f"Finished training the flow matching model for {task.name}.")
             print(f"Saved the flow matching model to {saved_path}.")
             self.fm_model = fm_model.to(device)
             self.D = fm_model.D
@@ -171,11 +122,9 @@ class ParetoFlow:
                 self.classifiers = [proxy.to(self.device) for proxy in proxies]
         # If the pretrained models are not provided, we need to train the models
         else:
-            print(f"Training the proxy models for {self.task_name}...")
-            saved_path, model = train_proxies(
-                self.input_x, self.input_y, self.task_name
-            )
-            print(f"Finished training the proxy models for {self.task_name}.")
+            print(f"Training the proxy models for {task.name}...")
+            saved_path, model = train_proxies(task.input_x, task.input_y, task.name)
+            print(f"Finished training the proxy models for {task.name}.")
             print(f"Saved the proxy models to {saved_path}.")
             self.proxies = model
             self.classifiers = [
@@ -652,10 +601,10 @@ class ParetoFlow:
         gamma: the gamma parameter
         return: the pareto set of the generated samples
         """
-        all_x = self.input_x.copy()
-        all_y = self.input_y.copy()
-        xl = self.xl.copy()
-        xu = self.xu.copy()
+        all_x = self.task.input_x.copy()
+        all_y = self.task.input_y.copy()
+        xl = self.task.xl.copy()
+        xu = self.task.xu.copy()
 
         if K == 0:
             K = len(self.classifiers) + 1
@@ -889,19 +838,19 @@ class ParetoFlow:
         res_y = res_y[np.where(visible_masks == 1)[0]]
 
         # Denormalize the data
-        if self.normalize_x:
-            if self.normalization_method == "z_score":
-                res_x = z_score_denormalize(res_x, self.x_mean, self.x_std)
-            elif self.normalization_method == "min_max":
-                res_x = min_max_denormalize(res_x, self.x_min, self.x_max)
-        if self.normalize_y:
-            if self.normalization_method == "z_score":
-                res_y = z_score_denormalize(res_y, self.y_mean, self.y_std)
-            elif self.normalization_method == "min_max":
-                res_y = min_max_denormalize(res_y, self.y_min, self.y_max)
+        if self.task.normalize_x:
+            if self.task.normalization_method == "z_score":
+                res_x = z_score_denormalize(res_x, self.task.x_mean, self.task.x_std)
+            elif self.task.normalization_method == "min_max":
+                res_x = min_max_denormalize(res_x, self.task.x_min, self.task.x_max)
+        if self.task.normalize_y:
+            if self.task.normalization_method == "z_score":
+                res_y = z_score_denormalize(res_y, self.task.y_mean, self.task.y_std)
+            elif self.task.normalization_method == "min_max":
+                res_y = min_max_denormalize(res_y, self.task.y_min, self.task.y_max)
 
         # Handle the discrete data
-        if self.is_discrete:
-            res_x = to_integers(res_x, self.num_classes_on_each_position)
+        if self.task.is_discrete:
+            res_x = to_integers(res_x, self.task.num_classes_on_each_position)
 
         return res_x, res_y

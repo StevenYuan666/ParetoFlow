@@ -44,11 +44,6 @@ def evaluation_fm(
 
     loss = loss / N
 
-    if epoch is None:
-        print(f"FINAL LOSS: nll={loss}")
-    else:
-        print(f"Epoch: {epoch}, val nll={loss}")
-
     return loss
 
 
