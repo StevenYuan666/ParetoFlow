@@ -1,5 +1,5 @@
 # ParetoFlow
-This repository contains the official implementation for the paper **"ParetoFlow: Guided Flows in Multi-Objective Optimization"**. See `experiments/README.md` for more details.
+This repository contains the official implementation for the paper [**"ParetoFlow: Guided Flows in Multi-Objective Optimization"**](https://openreview.net/forum?id=mLyyB4le5u), which is accepted by ICLR 2025. See `experiments/README.md` for more details.
 
 Moreover, to ease any future extension of this work, we provide a pip installable package [ParetoFlow](https://pypi.org/project/paretoflow/). See **Use ParetoFlow as a pip package** for more details.
 
@@ -161,13 +161,12 @@ python examples/discrete_examples.py
 If you find ParetoFlow useful in your research, please consider citing:
 
 ```bibtex
-@misc{yuan2024paretoflowguidedflowsmultiobjective,
-      title={ParetoFlow: Guided Flows in Multi-Objective Optimization}, 
-      author={Ye Yuan and Can Chen and Christopher Pal and Xue Liu},
-      year={2024},
-      eprint={2412.03718},
-      archivePrefix={arXiv},
-      primaryClass={cs.CE},
-      url={https://arxiv.org/abs/2412.03718}, 
+@inproceedings{
+    yuan2025paretoflow,
+    title={ParetoFlow: Guided Flows in Multi-Objective Optimization},
+    author={Ye Yuan and Can Chen and Christopher Pal and Xue Liu},
+    booktitle={The Thirteenth International Conference on Learning Representations},
+    year={2025},
+    url={https://openreview.net/forum?id=mLyyB4le5u}
 }
 ```
