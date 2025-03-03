@@ -1,5 +1,5 @@
 # ParetoFlow
-This repository contains the official implementation for the paper [**"ParetoFlow: Guided Flows in Multi-Objective Optimization"**](https://openreview.net/forum?id=mLyyB4le5u), which is accepted by ICLR 2025. See `experiments/README.md` for more details.
+This repository contains the official implementation for the paper [**"ParetoFlow: Guided Flows in Multi-Objective Optimization"**](https://openreview.net/forum?id=mLyyB4le5u), which is accepted by **ICLR 2025**. See `experiments/README.md` for more details.
 
 Moreover, to ease any future extension of this work, we provide a pip installable package [ParetoFlow](https://pypi.org/project/paretoflow/). See **Use ParetoFlow as a pip package** for more details.
 
